@@ -1,0 +1,16 @@
+#Directories
+.vs/
+/x64
+/Debug
+/Release
+
+branch/Debug
+branch/Release
+branch/x64
+
+#Files
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.sln
+
