@@ -6,6 +6,17 @@
 #include <thread>
 #include <chrono>
 
+void menuSound() 
+{
+	while (true) 
+	{
+		Beep(261, 200);
+		Beep(293, 200);
+		Beep(329, 200);
+	}
+
+}
+
 void displayCroc(HANDLE& hConsole)
 {
 	SetConsoleTextAttribute(hConsole, 2);
@@ -154,13 +165,45 @@ void displayCroc(HANDLE& hConsole)
 
 }
 
+void writeText(std::string text, int textSpeed = 0, bool jumpLine = true) 
+{
+	for (char c : text) 
+	{
+		std::cout << c;
+		Beep(261, 1);
+		switch (textSpeed) 
+		{
+			case 0:
+			  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			  break;
+			
+			case 1:
+			  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			  break;
+
+			case 2:
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				break;
+
+			case 3:
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
+				break;
+		}
+	}
+	
+	if(jumpLine)
+		std::cout << std::endl;
+}
+
 void welcome(HANDLE hConsole)
 {
 		SetConsoleTextAttribute(hConsole, 5);
 
+		std::cout << std::endl << std::endl;
+
 	    std::cout << "        hd          hm  mhdddddddd  dh          hhdddddddm  hhddddddhm  hm     mh  mhdddddddd" << std::endl;
-		std::cout << "        hd          hm  mh          dh          hh          hd      hm  hddm mddh  mh" << std::endl;
-		std::cout << "        dm          dm  mhdddddddd  dh          hh          hd      hm  hm  d  mh  mhdddddddd" << std::endl;
+		std::cout << "        hd    dm    hm  mh          dh          hh          hd      hm  hddm mddh  mh" << std::endl;
+		std::cout << "        dm    dm    dm  mhdddddddd  dh          hh          hd      hm  hm  d  mh  mhdddddddd" << std::endl;
 		std::cout << "          dm  dm  dm    mh          dh          hh          hd      hm  hm     mh  mh" << std::endl;
 		std::cout << "            dm  dm      Nddddddddd  mddddddddd  mddddddddm  hdddddddhm  md     md  mddddddddd" << std::endl;
 
@@ -182,20 +225,139 @@ void welcome(HANDLE hConsole)
 
 }
 
+class game 
+{
+public:
+	inline void setRunning(bool running) { m_Running = running; }
+	inline bool isRunning() { return m_Running; }
+
+	inline void setGameMode(int gameMode) { m_GameMode = gameMode; }
+	inline int getGameMode() { return m_GameMode; }
+
+	inline void setEmployeeCode(int employeeCode) { m_EmployeeCode = employeeCode; }
+	inline int getEmployeeCode() { return m_EmployeeCode; }
+
+private:
+	int m_GameMode;
+	bool m_Running = true;
+	int m_EmployeeCode;
+};
+
 int main()
 {
 	HANDLE hConsole;
-
+	game game;
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	int i;
-
 	//displayCroc(hConsole);
-	//system("cls");
+	system("cls");
 	
-	welcome(hConsole);
-	std::cin >> i;
+	int gameMode = -1;
+	int employeeCode = -1;
+	bool chooseGameMode = false;
+	int past;
+	std::string birthName;
+
+	//std::thread th1(menuSound);
+
+	while (game.isRunning()) 
+	{
+		while (!chooseGameMode) 
+		{
+
+			system("cls");
+			welcome(hConsole);
+
+			SetConsoleTextAttribute(hConsole, 2);
+
+			std::cout << "1. Play" << std::endl;
+			std::cout << "2. Enter employee code" << std::endl;
+			std::cout << "3. Quit" << std::endl;
+
+			std::cin >> gameMode;
+
+			switch (gameMode) 
+			{
+				case 1:
+					writeText(" \n \n starting game", 2, false );
+					writeText(" . . . .", 3);
+
+
+					chooseGameMode = true;
+					break;
+
+				case 2:
+					std::cout << std::endl << std::endl << "Please, enter your employee code: " << std::endl;
+					std::cin >> employeeCode;
+					
+					switch (employeeCode) 
+					{
+						case 1:
+							std::cout << "So you're a magician" << std::endl;
+							game.setEmployeeCode(employeeCode);
+							game.setGameMode(2);
+							chooseGameMode = true;
+
+							break;
+						case 2:
+							std::cout << "So you're a clown" << std::endl;
+							game.setEmployeeCode(employeeCode);
+							chooseGameMode = true;
+							break;
+						default:
+							std::cout << "Oh Rookie, it looks like you're not an employee. Yet." << std::endl;
+					}
+					break;
+
+				case 3:
+					game.setRunning(false);
+					chooseGameMode = true;
+					break;
+			}
+		} 
+		system("cls");
+
+		if (gameMode == 3) 
+		{
+			std::terminate();
+			return 0;
+
+		}
+
+		game.setGameMode(gameMode);
+
+		switch (game.getGameMode()) 
+		{
+			case 1:
+				std::cout << "Alastor:";  writeText(" Welcome to Ygg, our humble Circus!", 2);
+				std::cout << "Alastor:";  writeText("Alastor: What's your name child?", 2);
+				
+				std::cout << "Please Enter your name: ";
+				std::cin >> birthName;
+
+				std:: cout << 
+				
+				//std::cout << "Alastor: Welcome to our Ygg, our humble Circus" << std::endl;
+				std::cin >> past;
+				break;
+			case 2: 
+			{
+				switch (game.getEmployeeCode()) 
+				{
+					case 1:
+						std::cout << "Endeed, I did felt your magic aura the first time you were here, please, come with me" << std::endl;
+						std::cin >> past;
+						break;
+					case 2:
+						std::cout << "Endeed, I did felt your charismatic aura when you entered the place" << std::endl;
+						std::cin >> past;
+						break;
+				}
+			}
+		}
+	}
+	
 
 	delete hConsole;
-
+	std::terminate();
 }
