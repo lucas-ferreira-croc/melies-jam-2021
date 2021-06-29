@@ -3,6 +3,8 @@
 /x64
 /Debug
 /Release
+/bin
+/bin-int
 
 branch/Debug
 branch/Release
